@@ -6,7 +6,7 @@ import './index.css';
 const Constants = {
     width: 10,
     height: 10,
-    mineCount: 10,
+    mineCount: 50,
     tileCount: this.width * this.height
 }
 
@@ -30,7 +30,13 @@ function analyzeMines(tiles, i, j) {
     mineCount += tiles[right] && tiles[right][j] && tiles[right][j].hasMine ? 1 : 0;
     mineCount += tiles[right] && tiles[right][down] && tiles[right][down].hasMine ? 1 : 0;
 
-    tiles[i][j] = { ...t, ...{ i: i, j: j, mineCount: mineCount, sweeped: false } };
+    tiles[i][j] = { ...t, ...{ 
+        i: i, 
+        j: j, 
+        mineCount: mineCount, 
+        sweeped: false, 
+        flagged: false } 
+    };
 }
 
 class Board extends React.Component {
@@ -49,7 +55,7 @@ class Board extends React.Component {
             var y = Math.floor(Math.random() * Constants.width);
 
             var t = tiles[x][y];
-            console.log(x, y, t)
+            
             if (!t.hasMine) {
                 tiles[x][y] = {
                     adjacentMines: 0,
@@ -83,9 +89,18 @@ class Board extends React.Component {
         this.setState({ tiles: tiles });
     }
 
+    onContextMenu(e, i, j) {
+        const tiles = this.state.tiles.slice();
+
+        toggleFlagged(tiles, i, j);
+
+        this.setState({ tiles: tiles });
+        e.preventDefault();
+      }
+
     renderTile(i, j) {
         return (
-            <Tile key={j} {...this.state.tiles[i][j]} onClick={() => this.handleClick(i, j)} />
+            <Tile key={j} {...this.state.tiles[i][j]} onClick={() => this.handleClick(i, j)} onContextMenu={(e) => this.onContextMenu(e, i, j)} />
         );
     }
 
@@ -115,13 +130,13 @@ function uncoveredMine(tiles) {
     });
 
     return false;
-}
+};
 
 function uncoverMines(tiles, i, j) {
 
     var tile = tiles[i][j];
-    if(tile.sweeped) {
-        // if we have been uncovered, lets skip ourselves.
+    if(tile.sweeped || tile.flagged) {
+        // if we have been uncovered, or flagged, lets skip ourselves.
         return;
     }
 
@@ -145,6 +160,16 @@ function uncoverMines(tiles, i, j) {
         tiles[right] && tiles[right][j] && uncoverMines(tiles, right, j);
         tiles[right] && tiles[right][down] && uncoverMines(tiles, right, down);
     }
+};
+
+function toggleFlagged(tiles, i, j) {
+    var tile = tiles[i][j];
+    if(tile.sweeped) {
+        // if we have been uncovered, lets ignore this event
+        return;
+    }
+
+    tiles[i][j] = { ...tile, ...{ flagged: !tile.flagged } }
 }
 
 export default Board;

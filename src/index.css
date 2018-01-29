@@ -48,4 +48,40 @@ body {
   .game-info {
     margin-left: 20px;
   }
+
+  .flag {
+    color: #ff0101;
+  }
+
+  .num-1 {
+    color: #6e94fc;
+  }
+
+  .num-2 {
+    color: #fc736e;
+  }
+
+  .num-3 {
+    color: #50b650;
+  }
+
+  .num-4 {
+    color: #836efc;
+  }  
+  
+  .num-5 {
+    color: #7c3364;
+  }
+
+  .num-6 {
+    color: #6a9fa7;
+  }
+
+  .num-7 {
+    color: #c01e7c;
+  }
+
+  .num-8 {
+    color: #857f36;
+  }
   
