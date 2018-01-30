@@ -1,6 +1,5 @@
 import React from 'react';
-import Tile from './tile.jsx';
-import './index.css';
+import Tile from './Tile.jsx';
 
 
 function analyzeMines(tiles, i, j) {
