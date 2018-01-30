@@ -32,6 +32,8 @@ class SettingsInput extends React.Component {
                             <label htmlFor="mine-count">Mine Count</label>
                             <input id="mine-count" className="pure-u-23-24" type="text" value={mineCount} onChange={(event) => this.props.onSettingsChange(event, "MINECOUNT")} />
                         </div>
+
+                        <button type="button" className="pure-button pure-button-primary" onClick={() => this.props.onRestart()}>Restart</button>
                     </div>
                 </fieldset>
             </form>

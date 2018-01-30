@@ -36,18 +36,39 @@ class Board extends React.Component {
     constructor(props) {
         super(props);
 
-        var tiles = Array(this.props.height).fill(null).map(() => Array(this.props.width).fill({
+        const tiles = this.initializeBoard(props);
+
+        this.state = {
+            width: props.width,
+            height: props.height,
+            mineCount: props.mineCount, 
+            tiles: tiles 
+        };
+    }
+
+    initializeBoard(properties) {
+        var props = {};
+
+        props.width = parseInt(properties.width);
+        props.height = parseInt(properties.height);
+        props.mineCount = parseInt(properties.mineCount);
+
+        if(props.width * props.height <= props.mineCount) {
+            return [];
+        }
+
+        var tiles = Array(props.height).fill(null).map(() => Array(props.width).fill({
             adjacentMines: 0,
             hasMine: false
         }));
 
-        var i = this.props.mineCount;
+        var i = props.mineCount;
         while (i > 0) {
-            var x = Math.floor(Math.random() * this.props.height);
-            var y = Math.floor(Math.random() * this.props.width);
+            var x = Math.floor(Math.random() * props.height);
+            var y = Math.floor(Math.random() * props.width);
 
             var t = tiles[x][y];
-            
+
             if (!t.hasMine) {
                 tiles[x][y] = {
                     adjacentMines: 0,
@@ -63,18 +84,36 @@ class Board extends React.Component {
             });
         });
 
-        this.state = {
-            tiles: tiles,
-        };
+        return tiles;
     }
+    
+    componentWillReceiveProps(nextProps) {
+
+        if(!nextProps.width || nextProps.width <= 0
+            || !nextProps.height || nextProps.height <= 0
+            || !nextProps.mineCount || nextProps.mineCount <= 0
+            ) {
+            return;
+        }
+        
+        const tiles = this.initializeBoard(nextProps)
+
+        this.setState({
+            width: nextProps.width,
+            height: nextProps.height,
+            mineCount: nextProps.mineCount, 
+            tiles: tiles 
+        });  
+      }
 
     handleClick(i, j) {
         const tiles = this.state.tiles.slice();
 
-        uncoverMines(tiles, i, j);
+        uncoverTiles(tiles, i, j);
 
-        var lost = uncoveredMine(tiles);
+        var lost = uncoveredMine(tiles, i, j);
         if (lost) {
+            this.showBoard(tiles);
             return;
         }
 
@@ -96,6 +135,16 @@ class Board extends React.Component {
         );
     }
 
+    showBoard(tiles) {
+        tiles.forEach((row, i) => {
+            row.forEach((tile, j) => {
+                tiles[i][j].sweeped = true;
+            });
+        });
+    
+        this.setState({ ...this.state, ...{tiles: tiles }});
+    }
+
     render() {
 
         return (
@@ -112,19 +161,12 @@ class Board extends React.Component {
     }
 }
 
-function uncoveredMine(tiles) {
-    tiles.forEach((row, i) => {
-        row.forEach((tile, j) => {
-            if (tiles[i][j].sweeped && tiles[i][j].hasMine) {
-                return true;
-            }
-        });
-    });
-
-    return false;
+function uncoveredMine(tiles, i, j) {
+    const t = tiles[i][j];
+    return t.sweeped && t.hasMine;
 };
 
-function uncoverMines(tiles, i, j) {
+function uncoverTiles(tiles, i, j) {
 
     var tile = tiles[i][j];
     if(tile.sweeped || tile.flagged) {
@@ -142,15 +184,15 @@ function uncoverMines(tiles, i, j) {
         var up = j - 1;
         var down = j + 1;
 
-        tiles[left] && tiles[left][up] && uncoverMines(tiles, left, up);
-        tiles[left] && tiles[left][j] && uncoverMines(tiles, left, j);
-        tiles[left] && tiles[left][down] && uncoverMines(tiles, left, down);
-        tiles[i] && tiles[i][up] && uncoverMines(tiles, i, up);
+        tiles[left] && tiles[left][up] && uncoverTiles(tiles, left, up);
+        tiles[left] && tiles[left][j] && uncoverTiles(tiles, left, j);
+        tiles[left] && tiles[left][down] && uncoverTiles(tiles, left, down);
+        tiles[i] && tiles[i][up] && uncoverTiles(tiles, i, up);
 
-        tiles[i] && tiles[i][down] && uncoverMines(tiles, i, down);
-        tiles[right] && tiles[right][up] && uncoverMines(tiles, right, up);
-        tiles[right] && tiles[right][j] && uncoverMines(tiles, right, j);
-        tiles[right] && tiles[right][down] && uncoverMines(tiles, right, down);
+        tiles[i] && tiles[i][down] && uncoverTiles(tiles, i, down);
+        tiles[right] && tiles[right][up] && uncoverTiles(tiles, right, up);
+        tiles[right] && tiles[right][j] && uncoverTiles(tiles, right, j);
+        tiles[right] && tiles[right][down] && uncoverTiles(tiles, right, down);
     }
 };
 

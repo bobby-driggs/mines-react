@@ -7,18 +7,21 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
 
+        const settings = {
+            width: 10,
+            height: 10,
+            mineCount: 15
+        };
+
         this.state = {
-            settings: {
-                width: 10,
-                height: 10,
-                mineCount: 15
-            }
+            settings: JSON.parse(JSON.stringify(settings)),
+            gamesettings: JSON.parse(JSON.stringify(settings))
         };
     }
 
     onSettingsChange(event, type) {
     
-        const settings = this.state.settings;
+        var settings = this.state.settings;
 
         switch (type) {
             case "WIDTH":
@@ -33,9 +36,17 @@ class Game extends React.Component {
             default:
                 return;
         }
+        
+        this.setState({ 
+            ...this.state, 
+            ...{ settings: this.state.settings } 
+        });
+    }
 
-        this.setState({
-            settings: settings
+    onRestart() {
+        this.setState({ 
+            ...this.state, 
+            ...{ gamesettings: this.state.settings } 
         });
     }
 
@@ -43,17 +54,14 @@ class Game extends React.Component {
 
         const settings = this.state.settings;
 
-
-        console.log(settings.width, settings.height, settings.mineCount)
-
         return (
             <div>
                 <div className="game-settings">
-                    <SettingsInput width={settings.width} height={settings.height} mineCount={settings.mineCount} onSettingsChange={(event, type) => this.onSettingsChange(event, type) } />
+                    <SettingsInput {...this.state.settings} onSettingsChange={(event, type) => this.onSettingsChange(event, type) } onRestart={() => this.onRestart()} />
                 </div>
                 <div className="game">
                     <div className="game-board">
-                        <Board width={settings.width} height={settings.height} mineCount={settings.mineCount} />
+                        <Board { ...this.state.gamesettings } />
                     </div>
                     <div className="game-info">
                         <div>{/* status */}</div>
