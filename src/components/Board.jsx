@@ -1,14 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Tile from './tile.jsx';
 import './index.css';
 
-const Constants = {
-    width: 10,
-    height: 10,
-    mineCount: 50,
-    tileCount: this.width * this.height
-}
 
 function analyzeMines(tiles, i, j) {
     var t = tiles[i][j];
@@ -44,15 +37,15 @@ class Board extends React.Component {
     constructor(props) {
         super(props);
 
-        var tiles = Array(Constants.height).fill(null).map(() => Array(Constants.width).fill({
+        var tiles = Array(this.props.height).fill(null).map(() => Array(this.props.width).fill({
             adjacentMines: 0,
             hasMine: false
         }));
 
-        var i = Constants.mineCount;
+        var i = this.props.mineCount;
         while (i > 0) {
-            var x = Math.floor(Math.random() * Constants.height);
-            var y = Math.floor(Math.random() * Constants.width);
+            var x = Math.floor(Math.random() * this.props.height);
+            var y = Math.floor(Math.random() * this.props.width);
 
             var t = tiles[x][y];
             
