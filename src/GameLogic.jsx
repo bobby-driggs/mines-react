@@ -1,4 +1,3 @@
-
 export function uncoveredMine(tiles, i, j) {
     const t = tiles[i][j];
     return t.sweeped && t.hasMine;

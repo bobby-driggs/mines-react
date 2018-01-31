@@ -4,6 +4,8 @@ import Timer from './Timer.jsx';
 import SettingsInput from './input/SettingsInput.jsx';
 import { initializeBoard, toggleFlagged, uncoveredMine, uncoverTiles, getFlagCount } from '../GameLogic.jsx'
 
+var GameStates = { "WON": 1, "LOSS": 2, "PLAYING": 3 };
+
 class Game extends React.Component {
 
     constructor(props) {
@@ -20,6 +22,7 @@ class Game extends React.Component {
         const timer = this.startTimer();
 
         this.state = {
+            gameState: GameStates.PLAYING,
             settings: settings,
             tiles: tiles,
             timer: timer
@@ -60,7 +63,7 @@ class Game extends React.Component {
             });
         });
 
-        this.setState({ ...this.state, ...{ tiles: tiles } });
+        this.setState({ tiles: tiles });
     }
 
     sweepTile(i, j) {
@@ -69,13 +72,14 @@ class Game extends React.Component {
         uncoverTiles(tiles, i, j);
 
         var lost = uncoveredMine(tiles, i, j);
+        
         if (lost) {
             clearInterval(this.state.timer.intervalId);
             this.showBoard(tiles);
-            return;
-        }
+            this.setState({gameState: GameStates.LOSS})
+        } else 
 
-        this.setState({ lost: lost, tiles: tiles });
+        this.setState({ tiles: tiles });
     }
 
     flagTile(e, i, j) {
@@ -124,6 +128,7 @@ class Game extends React.Component {
     render() {
 
         const flagCount = getFlagCount(this.state.tiles);
+
         const settings = this.state.settings;
 
         return (
@@ -148,7 +153,7 @@ class Game extends React.Component {
                             <Timer {...this.state.timer} />
                         </div>
                         <div>
-                            <i class="fas fa-bomb"></i>: {flagCount}
+                            <i class="fas fa-flag flag"></i>: {flagCount}
                         </div>
                     </div>
                 </div>
