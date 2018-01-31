@@ -23,8 +23,10 @@ class Tile extends React.Component {
         }
 
         return (
-            <button className="square" onClick={() => this.props.onClick()} onContextMenu={(event) => this.props.onContextMenu(event)} dangerouslySetInnerHTML={{__html: displayText}}>
-                
+            <button className="square" 
+                onClick={() => this.props.onClick()} 
+                onContextMenu={(event) => this.props.onContextMenu(event)} 
+                dangerouslySetInnerHTML={{__html: displayText}}>
             </button>
         );
     }

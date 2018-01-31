@@ -1,6 +1,8 @@
 import React from 'react';
 import Board from './Board.jsx';
+import Timer from './Timer.jsx';
 import SettingsInput from './input/SettingsInput.jsx';
+import { initializeBoard, toggleFlagged, uncoveredMine, uncoverTiles, getFlagCount } from '../GameLogic.jsx'
 
 class Game extends React.Component {
 
@@ -13,14 +15,80 @@ class Game extends React.Component {
             mineCount: 15
         };
 
+        const tiles = initializeBoard(settings);
+
+        const timer = this.startTimer();
+
         this.state = {
-            settings: JSON.parse(JSON.stringify(settings)),
-            gamesettings: JSON.parse(JSON.stringify(settings))
+            settings: settings,
+            tiles: tiles,
+            timer: timer
         };
     }
 
+    startTimer() {
+        var intervalId = setInterval(() => {
+            var newMinute = this.state.timer.minutes;
+            var newSecond = this.state.timer.seconds += 1;
+
+            if (newSecond >= 60) {
+                newSecond = 0;
+                newMinute += 1;
+            }
+
+            this.setState({
+                timer: {
+                    seconds: newSecond,
+                    minutes: newMinute,
+                    intervalId: this.state.timer.intervalId
+                }
+            });
+
+        }, 1000);
+
+        return {
+            seconds: 0,
+            minutes: 0,
+            intervalId: intervalId
+        };
+    }
+
+    showBoard(tiles) {
+        tiles.forEach((row, i) => {
+            row.forEach((tile, j) => {
+                tiles[i][j].sweeped = true;
+            });
+        });
+
+        this.setState({ ...this.state, ...{ tiles: tiles } });
+    }
+
+    sweepTile(i, j) {
+        const tiles = this.state.tiles.slice();
+
+        uncoverTiles(tiles, i, j);
+
+        var lost = uncoveredMine(tiles, i, j);
+        if (lost) {
+            clearInterval(this.state.timer.intervalId);
+            this.showBoard(tiles);
+            return;
+        }
+
+        this.setState({ lost: lost, tiles: tiles });
+    }
+
+    flagTile(e, i, j) {
+        const tiles = this.state.tiles.slice();
+
+        toggleFlagged(tiles, i, j);
+
+        this.setState({ tiles: tiles });
+        e.preventDefault();
+    }
+
     onSettingsChange(event, type) {
-    
+
         var settings = this.state.settings;
 
         switch (type) {
@@ -36,36 +104,52 @@ class Game extends React.Component {
             default:
                 return;
         }
-        
-        this.setState({ 
-            ...this.state, 
-            ...{ settings: this.state.settings } 
+
+        this.setState({
+            ...this.state,
+            ...{ settings: settings }
         });
     }
 
     onRestart() {
-        this.setState({ 
-            ...this.state, 
-            ...{ gamesettings: this.state.settings } 
+        const newTimer = this.startTimer()
+        const newTiles = initializeBoard(this.state.settings);
+
+        this.setState({
+            tiles: newTiles,
+            timer: newTimer
         });
     }
 
     render() {
 
+        const flagCount = getFlagCount(this.state.tiles);
         const settings = this.state.settings;
 
         return (
             <div>
                 <div className="game-settings">
-                    <SettingsInput {...this.state.settings} onSettingsChange={(event, type) => this.onSettingsChange(event, type) } onRestart={() => this.onRestart()} />
+                    <SettingsInput
+                        {...this.state.settings}
+                        onSettingsChange={(event, type) => this.onSettingsChange(event, type)}
+                        onRestart={() => this.onRestart()}
+                    />
                 </div>
                 <div className="game">
                     <div className="game-board">
-                        <Board { ...this.state.gamesettings } />
+                        <Board
+                            tiles={this.state.tiles}
+                            onLeftClick={(i, j) => this.sweepTile(i, j)}
+                            onRightClick={(e, i, j) => this.flagTile(e, i, j)}
+                        />
                     </div>
                     <div className="game-info">
-                        <div>{/* status */}</div>
-                        <ol>{/* TODO */}</ol>
+                        <div>
+                            <Timer {...this.state.timer} />
+                        </div>
+                        <div>
+                            <i class="fas fa-bomb"></i>: {flagCount}
+                        </div>
                     </div>
                 </div>
             </div>

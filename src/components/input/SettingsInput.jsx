@@ -12,6 +12,10 @@ class SettingsInput extends React.Component {
         const height = this.props.height;
         const mineCount = this.props.mineCount;
 
+        const isInvalidBoardSize = () => {
+            return (width * height) <= mineCount;
+          };
+
         return (
             <form className="pure-form pure-form-stacked">
                 <fieldset>
@@ -32,8 +36,12 @@ class SettingsInput extends React.Component {
                             <label htmlFor="mine-count">Mine Count</label>
                             <input id="mine-count" className="pure-u-23-24" type="text" value={mineCount} onChange={(event) => this.props.onSettingsChange(event, "MINECOUNT")} />
                         </div>
-
-                        <button type="button" className="pure-button pure-button-primary" onClick={() => this.props.onRestart()}>Restart</button>
+                        <div className={"pure-u-1 " + (isInvalidBoardSize() ? " warning " : " hidden ")}>
+                            Invalid board size! Mine count must be smaller than total board size.
+                        </div>
+                    </div>
+                    <div className="pure-g">
+                        <button type="button" className={"pure-button pure-button-primary " + (isInvalidBoardSize() ? " hidden " : "")} onClick={() => this.props.onRestart()}>Restart</button>
                     </div>
                 </fieldset>
             </form>
