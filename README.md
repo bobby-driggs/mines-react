@@ -1,7 +1,7 @@
 ![A game of mines-react](./public/preview.png)
 
 ## Mines-React
-A clone of minesweeper, built using just React.JS
+A clone of minesweeper, built using just React.JS Fully hosted at https://mines.bobbydriggs.com/ You can self host, below:
 
 ## Dependencies
 React.js, Node.js
