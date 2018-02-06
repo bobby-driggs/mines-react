@@ -4,7 +4,7 @@ import Timer from './Timer.jsx';
 import SettingsInput from './input/SettingsInput.jsx';
 import { initializeBoard, toggleFlagged, uncoveredMine, uncoverTiles, getFlagCount, checkForLoss, checkForWin } from '../GameLogic.jsx'
 
-var GameStates = { "WON": 1, "LOSS": 2, "PLAYING": 3 };
+var GameStates = { "WON": 1, "LOST": 2, "PLAYING": 3 };
 
 class Game extends React.Component {
 
@@ -30,6 +30,11 @@ class Game extends React.Component {
     }
 
     startTimer() {
+
+        var currentIntervalId = this.state && this.state.timer && this.state.timer.intervalId;
+
+        clearInterval(currentIntervalId);
+
         var intervalId = setInterval(() => {
             var newMinute = this.state.timer.minutes;
             var newSecond = this.state.timer.seconds += 1;
@@ -76,8 +81,11 @@ class Game extends React.Component {
         if (lost) {
             clearInterval(this.state.timer.intervalId);
             this.showBoard(tiles);
-            this.setState({gameState: GameStates.LOSS})
-        } 
+            this.setState({gameState: GameStates.LOST})
+        } else if(checkForWin(this.state.tiles, this.state.settings.mineCount, this.state.settings.width * this.state.settings.height)) {
+            clearInterval(this.state.timer.intervalId);
+            this.setState({gameState: GameStates.WON})
+        }
 
         this.setState({ tiles: tiles });
     }
@@ -126,17 +134,12 @@ class Game extends React.Component {
     render() {
 
         const isGameLost = () => {
-            return this.state.gameState === GameStates.LOSS;
+            return this.state.gameState === GameStates.LOST;
         };
 
         const isGameWon = () => {
             return this.state.gameState === GameStates.WON;
         };
-        
-        if(!isGameWon() && checkForWin(this.state.tiles, this.state.settings.mineCount, this.state.settings.width * this.state.settings.height)) {
-            clearInterval(this.state.timer.intervalId);
-            this.setState({gameState: GameStates.WON})
-        }
 
         const flagCount = getFlagCount(this.state.tiles);
 

@@ -155,7 +155,9 @@ export function checkForWin(tiles, totalMineCount, boardSize) {
         });
     });
 
-    return totalMineCount === runningMineCount && runningSweptCount === (boardSize - totalMineCount);
+    var minesMatch = totalMineCount == runningMineCount;
+    var sweepMatch = runningSweptCount == (boardSize - totalMineCount);
+    return minesMatch && sweepMatch;
 }
 
 export function checkForLoss(tiles) {
