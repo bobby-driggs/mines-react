@@ -108,3 +108,13 @@ body {
   .hidden {
     display: none;
   }
+
+  .won {
+    font-size: 40px;
+    color:#50b650;
+  }
+
+  .lost {
+    font-size: 40px;
+    color: #7c3364;
+  }

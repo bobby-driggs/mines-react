@@ -56,7 +56,6 @@ export function getFlagCount(tiles) {
 
     tiles.forEach((row, i) => {
         row.forEach((tile, j) => {
-            console.log(tile, i, j);
             if(tile.flagged == true) {
                 flagCount += 1;
             }
@@ -136,4 +135,40 @@ export function analyzeMines(tiles, i, j) {
             flagged: false
         }
     };
+}
+
+export function checkForWin(tiles, totalMineCount, boardSize) {
+
+    var runningMineCount = 0;
+    var runningSweptCount = 0;
+
+    tiles.forEach((row, i) => {
+        row.forEach((tile, j) => {
+            
+            var t = tiles[i][j];
+            if (t.hasMine && !t.sweeped) {
+                runningMineCount += 1;
+            } else if (t.sweeped) {
+                runningSweptCount += 1;
+            }
+
+        });
+    });
+
+    return totalMineCount === runningMineCount && runningSweptCount === (boardSize - totalMineCount);
+}
+
+export function checkForLoss(tiles) {
+    tiles.forEach((row, i) => {
+        row.forEach((tile, j) => {
+            
+            var t = tiles[i][j];
+            if (t.hasMine && t.sweeped) {
+                return true;
+            }
+
+        });
+    });
+
+    return false;
 }

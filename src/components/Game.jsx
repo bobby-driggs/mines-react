@@ -2,7 +2,7 @@ import React from 'react';
 import Board from './Board.jsx';
 import Timer from './Timer.jsx';
 import SettingsInput from './input/SettingsInput.jsx';
-import { initializeBoard, toggleFlagged, uncoveredMine, uncoverTiles, getFlagCount } from '../GameLogic.jsx'
+import { initializeBoard, toggleFlagged, uncoveredMine, uncoverTiles, getFlagCount, checkForLoss, checkForWin } from '../GameLogic.jsx'
 
 var GameStates = { "WON": 1, "LOSS": 2, "PLAYING": 3 };
 
@@ -77,7 +77,7 @@ class Game extends React.Component {
             clearInterval(this.state.timer.intervalId);
             this.showBoard(tiles);
             this.setState({gameState: GameStates.LOSS})
-        } else 
+        } 
 
         this.setState({ tiles: tiles });
     }
@@ -109,10 +109,7 @@ class Game extends React.Component {
                 return;
         }
 
-        this.setState({
-            ...this.state,
-            ...{ settings: settings }
-        });
+        this.setState({ settings: settings });
     }
 
     onRestart() {
@@ -121,15 +118,27 @@ class Game extends React.Component {
 
         this.setState({
             tiles: newTiles,
-            timer: newTimer
+            timer: newTimer,
+            gameState: GameStates.PLAYING
         });
     }
 
     render() {
 
-        const flagCount = getFlagCount(this.state.tiles);
+        const isGameLost = () => {
+            return this.state.gameState === GameStates.LOSS;
+        };
 
-        const settings = this.state.settings;
+        const isGameWon = () => {
+            return this.state.gameState === GameStates.WON;
+        };
+        
+        if(!isGameWon() && checkForWin(this.state.tiles, this.state.settings.mineCount, this.state.settings.width * this.state.settings.height)) {
+            clearInterval(this.state.timer.intervalId);
+            this.setState({gameState: GameStates.WON})
+        }
+
+        const flagCount = getFlagCount(this.state.tiles);
 
         return (
             <div>
@@ -153,7 +162,13 @@ class Game extends React.Component {
                             <Timer {...this.state.timer} />
                         </div>
                         <div>
-                            <i class="fas fa-flag flag"></i>: {flagCount}
+                            <i className="fas fa-flag flag"></i>: {flagCount}
+                        </div>
+                        <div className={" " + (isGameLost() ? " lost " : " hidden ")}>
+                            LOST
+                        </div>
+                        <div className={" " + (isGameWon() ? " won " : " hidden ")}>
+                            WON
                         </div>
                     </div>
                 </div>
