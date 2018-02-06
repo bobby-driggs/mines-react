@@ -153,13 +153,6 @@ class Game extends React.Component {
                     />
                 </div>
                 <div className="game">
-                    <div className="game-board">
-                        <Board
-                            tiles={this.state.tiles}
-                            onLeftClick={(i, j) => this.sweepTile(i, j)}
-                            onRightClick={(e, i, j) => this.flagTile(e, i, j)}
-                        />
-                    </div>
                     <div className="game-info">
                         <div>
                             <Timer {...this.state.timer} />
@@ -173,6 +166,13 @@ class Game extends React.Component {
                         <div className={" " + (isGameWon() ? " won " : " hidden ")}>
                             WON
                         </div>
+                    </div>
+                    <div className="game-board">
+                        <Board
+                            tiles={this.state.tiles}
+                            onLeftClick={(i, j) => this.sweepTile(i, j)}
+                            onRightClick={(e, i, j) => this.flagTile(e, i, j)}
+                        />
                     </div>
                 </div>
             </div>

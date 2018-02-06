@@ -1,120 +1,127 @@
 body {
-    font: 14px "Century Gothic", Futura, sans-serif;
-    margin: 20px;
-  }
+  font: 14px "Century Gothic", Futura, sans-serif;
+  margin: 20px;
+}
+
+ol, ul {
+  padding-left: 30px;
+}
+
+.board-row {
+  white-space: nowrap;
+}
+
+.board-row:after {
+  clear: both;
+  content: "";
+  display: table;
+}
+
+.status {
+  margin-bottom: 10px;
+}
+
+.square {
+  background: #fff;
+  border: 1px solid #999;
   
-  ol, ul {
-    padding-left: 30px;
-  }
-  
-  .board-row:after {
-    clear: both;
-    content: "";
-    display: table;
-  }
-  
-  .status {
-    margin-bottom: 10px;
-  }
-  
-  .square {
-    background: #fff;
-    border: 1px solid #999;
-    float: left;
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 40px;
-    height: 40px;
-    margin-right: -1px;
-    margin-top: -1px;
-    padding: 0;
-    text-align: center;
-    width: 40px;
-  }
-  
-  .square:focus {
-    outline: none;
-  }
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 40px;
+  height: 40px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 40px;
 
-  .square:hover {
-    background: #eee;
-  }
-  
-  .kbd-navigation .square:focus {
-    background: #ddd;
-  }
-  
-  .game {
-    display: flex;
-    flex-direction: row;
-  }
+  display: inline-block;
+}
 
-  .game-settings {
-    margin-bottom: 20px;
-  }
-  
-  .game-info {
-    margin-left: 20px;
-    font-size: 20px;
-  }
+.square:focus {
+  outline: none;
+}
 
-  .flag {
-    color: #ff0101;
-  }
+.square:hover {
+  background: #eee;
+}
 
-  .num-1 {
-    color: #6e94fc;
-  }
+.kbd-navigation .square:focus {
+  background: #ddd;
+}
 
-  .num-2 {
-    color: #fc736e;
-  }
+.game {
+}
 
-  .num-3 {
-    color: #50b650;
-  }
+.game-board {
+  margin-right: 20px;
+}
 
-  .num-4 {
-    color: #836efc;
-  }  
-  
-  .num-5 {
-    color: #7c3364;
-  }
+.game-settings {
+  margin-bottom: 20px;
+}
 
-  .num-6 {
-    color: #6a9fa7;
-  }
+.game-info {
+  margin-bottom: 20px;
+  font-size: 20px;
+}
 
-  .num-7 {
-    color: #c01e7c;
-  }
+.flag {
+  color: #ff0101;
+}
 
-  .num-8 {
-    color: #857f36;
-  }
-  
-  .warning {
-      border: 1px solid;
-			margin: 10px 0px;
-			padding: 15px 10px 15px 50px;
-			background-repeat: no-repeat;
-      background-position: 10px center;
+.num-1 {
+  color: #6e94fc;
+}
 
-      color: #9F6000;
-			background-color: #FEEFB3;
-  }
+.num-2 {
+  color: #fc736e;
+}
 
-  .hidden {
-    display: none;
-  }
+.num-3 {
+  color: #50b650;
+}
 
-  .won {
-    font-size: 40px;
-    color:#50b650;
-  }
+.num-4 {
+  color: #836efc;
+}
 
-  .lost {
-    font-size: 40px;
-    color: #7c3364;
-  }
+.num-5 {
+  color: #7c3364;
+}
+
+.num-6 {
+  color: #6a9fa7;
+}
+
+.num-7 {
+  color: #c01e7c;
+}
+
+.num-8 {
+  color: #857f36;
+}
+
+.warning {
+  border: 1px solid;
+  margin: 10px 0px;
+  padding: 15px 10px 15px 50px;
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  color: #9F6000;
+  background-color: #FEEFB3;
+}
+
+.hidden {
+  display: none;
+}
+
+.won {
+  font-size: 40px;
+  color: #50b650;
+}
+
+.lost {
+  font-size: 40px;
+  color: #7c3364;
+}

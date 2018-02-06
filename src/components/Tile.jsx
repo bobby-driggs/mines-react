@@ -8,7 +8,7 @@ class Tile extends React.Component {
 
     render() {
 
-        var displayText = "";
+        var displayText = "&nbsp;";
         
         if (this.props.flagged) {
             displayText = '<i class="fas fa-flag flag"></i>';
