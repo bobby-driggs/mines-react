@@ -1,3 +1,5 @@
+![A game of mines-react](./public/preview.png)
+
 ## Mines-React
 A clone of minesweeper, built using just React.JS
 
